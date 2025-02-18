@@ -1,0 +1,5 @@
+Flask==2.0.1
+mysql-connector-python==8.0.26
+python-docx==0.8.11
+openpyxl==3.0.9
+reportlab==3.6.6
