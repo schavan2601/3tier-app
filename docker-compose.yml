@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Tier 1: HTTPD Service
+  httpd:
+    build: ./httpd
+    ports:
+      - "80:80"
+    depends_on:
+      - business_logic
+    networks:
+      - app-network
+
+  # Tier 2: Business Logic Service
+  business_logic:
+    build: ./business-logic
+    volumes:
+      - ./shared:/app/shared
+    environment:
+      - DB_HOST=database
+      - DB_USER=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  # Tier 3: Database Service
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: appdb
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
